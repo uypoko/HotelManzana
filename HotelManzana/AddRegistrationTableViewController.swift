@@ -10,6 +10,8 @@ import UIKit
 
 class AddRegistrationTableViewController: UITableViewController, SelectRoomTypeTableViewControllerDelegate {
 
+    @IBOutlet weak var doneBarButton: UIBarButtonItem!
+    
     @IBOutlet weak var firstNameTextField: UITextField!
     @IBOutlet weak var lastNameTextField: UITextField!
     @IBOutlet weak var emailTextField: UITextField!
@@ -28,7 +30,11 @@ class AddRegistrationTableViewController: UITableViewController, SelectRoomTypeT
     @IBOutlet weak var wifiSwitch: UISwitch!
     
     @IBOutlet weak var roomTypeLabel: UILabel!
-    var roomType: RoomType?
+    var roomType: RoomType? {
+        didSet {
+            updateDoneBarButtonState()
+        }
+    }
     
     let checkInDatePickerCellIndexPath = IndexPath(row: 1, section: 1)
     let checkOutDatePickerCellIndexPath = IndexPath(row: 3, section: 1)
@@ -43,6 +49,8 @@ class AddRegistrationTableViewController: UITableViewController, SelectRoomTypeT
         }
     }
     
+    var registration: Registration?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -51,12 +59,25 @@ class AddRegistrationTableViewController: UITableViewController, SelectRoomTypeT
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
-        let midnightToday = Calendar.current.startOfDay(for: Date())
-        checkInDatePicker.minimumDate = midnightToday
-        checkInDatePicker.date = midnightToday
+        if let registration = registration {
+            firstNameTextField.text = registration.firstName
+            lastNameTextField.text = registration.lastName
+            emailTextField.text = registration.email
+            checkInDatePicker.date = registration.checkInDate
+            checkOutDatePicker.date = registration.checkOutDate
+            numberOfAdultsStepper.value = Double(registration.numberOfAldults)
+            numberOfChildrenStepper.value = Double(registration.numberOfChildren)
+            wifiSwitch.isOn = registration.wifi
+            roomType = registration.roomType
+        } else {
+            let midnightToday = Calendar.current.startOfDay(for: Date())
+            checkInDatePicker.minimumDate = midnightToday
+            checkInDatePicker.date = midnightToday
+        }
         updateDateViews()
         updateNumberOfGuests()
         updateRoomType()
+        updateDoneBarButtonState()
     }
     
     func updateDateViews() {
@@ -66,6 +87,17 @@ class AddRegistrationTableViewController: UITableViewController, SelectRoomTypeT
         dateFormatter.dateStyle = .medium
         checkInLabel.text = dateFormatter.string(from: checkInDatePicker.date)
         checkOutLabel.text = dateFormatter.string(from: checkOutDatePicker.date)
+    }
+    
+    func updateDoneBarButtonState() {
+        let firstName = firstNameTextField.text ?? ""
+        let lastName = lastNameTextField.text ?? ""
+        let email = emailTextField.text ?? ""
+        doneBarButton.isEnabled = !firstName.isEmpty && !lastName.isEmpty && !email.isEmpty && roomType != nil
+    }
+    
+    @IBAction func textEditingChanged() {
+        updateDoneBarButtonState()
     }
     
     @IBAction func datePickerValueChanged(_ sender: UIDatePicker) {
@@ -154,10 +186,9 @@ class AddRegistrationTableViewController: UITableViewController, SelectRoomTypeT
         updateRoomType()
     }
     
-    @IBAction func doneBarButtonTapped(_ sender: Any) {
-        
+    @IBAction func cancelButtonTapped(_ sender: Any) {
+        dismiss(animated: true, completion: nil)
     }
-    
     /*
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
@@ -209,6 +240,18 @@ class AddRegistrationTableViewController: UITableViewController, SelectRoomTypeT
             let selectRoomTypeTableViewController = segue.destination as? SelectRoomTypeTableViewController
             selectRoomTypeTableViewController?.delegate = self
             selectRoomTypeTableViewController?.roomType = roomType
+        } else if segue.identifier == "AddEditRegistration" {
+            guard let roomType = roomType else { return }
+            let firstName = firstNameTextField.text ?? ""
+            let lastName = lastNameTextField.text ?? ""
+            let email = emailTextField.text ?? ""
+            let checkInDate = checkInDatePicker.date
+            let checkOutDate = checkOutDatePicker.date
+            let adults = Int(numberOfAdultsStepper.value)
+            let children = Int(numberOfChildrenStepper.value)
+            let wifi = wifiSwitch.isOn
+            
+            registration = Registration(firstName: firstName, lastName: lastName, email: email, checkInDate: checkInDate, checkOutDate: checkOutDate, numberOfAldults: adults, numberOfChildren: children, roomType: roomType, wifi: wifi)
         }
     }
 

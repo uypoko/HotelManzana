@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wSC-st-ydy">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="QIN-bw-Z7i">
     <device id="retina6_1" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -32,6 +32,9 @@
                                                     <nil key="textColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                                     <textInputTraits key="textInputTraits" textContentType="given-name"/>
+                                                    <connections>
+                                                        <action selector="textEditingChanged" destination="Us7-gr-Esp" eventType="editingChanged" id="apf-zT-PCJ"/>
+                                                    </connections>
                                                 </textField>
                                             </subviews>
                                             <constraints>
@@ -54,6 +57,9 @@
                                                     <nil key="textColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                                     <textInputTraits key="textInputTraits" textContentType="family-name"/>
+                                                    <connections>
+                                                        <action selector="textEditingChanged" destination="Us7-gr-Esp" eventType="editingChanged" id="VdE-AZ-H0o"/>
+                                                    </connections>
                                                 </textField>
                                             </subviews>
                                             <constraints>
@@ -76,6 +82,9 @@
                                                     <nil key="textColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                                     <textInputTraits key="textInputTraits" textContentType="email"/>
+                                                    <connections>
+                                                        <action selector="textEditingChanged" destination="Us7-gr-Esp" eventType="editingChanged" id="ceC-yw-tPT"/>
+                                                    </connections>
                                                 </textField>
                                             </subviews>
                                             <constraints>
@@ -367,9 +376,14 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="New Reservation" id="N9g-ZV-qol">
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="mha-uW-Nla">
+                            <connections>
+                                <action selector="cancelButtonTapped:" destination="Us7-gr-Esp" id="kee-Cw-3KR"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Done" id="ZJb-wC-ND8">
                             <connections>
-                                <action selector="doneBarButtonTapped:" destination="Us7-gr-Esp" id="PGg-Ic-y75"/>
+                                <segue destination="yBH-gb-e1E" kind="unwind" identifier="AddEditRegistration" unwindAction="unwindFromAddRegistrationWithUnwindSegue:" id="adY-9Q-yDW"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -378,6 +392,7 @@
                         <outlet property="checkInLabel" destination="WVG-Lg-NZd" id="ELu-Fw-Zkf"/>
                         <outlet property="checkOutDatePicker" destination="ydV-xH-qxN" id="hXb-rT-Zlu"/>
                         <outlet property="checkOutLabel" destination="BlE-FI-PY0" id="SuB-yr-FJP"/>
+                        <outlet property="doneBarButton" destination="ZJb-wC-ND8" id="3aG-kL-QUd"/>
                         <outlet property="emailTextField" destination="2MG-qr-iqn" id="c5d-b9-ycv"/>
                         <outlet property="firstNameTextField" destination="tUD-yy-QPG" id="uwa-Zs-mRc"/>
                         <outlet property="lastNameTextField" destination="VcH-W5-ghr" id="7Hv-Ym-oqx"/>
@@ -391,8 +406,9 @@
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="F0G-JS-cF6" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="yBH-gb-e1E" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="-342" y="56"/>
+            <point key="canvasLocation" x="-359" y="94"/>
         </scene>
         <!--Select Room Type Table View Controller-->
         <scene sceneID="LYx-ML-dQE">
@@ -436,7 +452,77 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tHg-px-NZ5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="385" y="58"/>
+            <point key="canvasLocation" x="378" y="94"/>
+        </scene>
+        <!--Root View Controller-->
+        <scene sceneID="zhP-IB-jHA">
+            <objects>
+                <tableViewController id="QL8-i0-gEP" customClass="RegistrationTableViewController" customModule="HotelManzana" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="k69-yZ-TOb">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="RegistrationCell" textLabel="aPO-Xb-9RJ" detailTextLabel="qeP-Nq-l0Y" style="IBUITableViewCellStyleSubtitle" id="tgK-u0-g7W">
+                                <rect key="frame" x="0.0" y="28" width="414" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="tgK-u0-g7W" id="935-ja-XeM">
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="aPO-Xb-9RJ">
+                                            <rect key="frame" x="20" y="5" width="33.5" height="20.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Subtitle" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="qeP-Nq-l0Y">
+                                            <rect key="frame" x="20" y="25.5" width="44" height="14.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="wSC-st-ydy" kind="presentation" identifier="EditRegistration" id="ldE-Ci-Pyu"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="QL8-i0-gEP" id="5Ku-1Q-1sr"/>
+                            <outlet property="delegate" destination="QL8-i0-gEP" id="ljh-2l-tJX"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Root View Controller" id="2hJ-nx-ulU">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="OHF-m6-2na">
+                            <connections>
+                                <segue destination="wSC-st-ydy" kind="presentation" id="4oH-k4-FKQ"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DTA-u0-pGt" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-359" y="-627"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="wX3-uH-8Gz">
+            <objects>
+                <navigationController id="QIN-bw-Z7i" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="HNI-kr-hY4">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="QL8-i0-gEP" kind="relationship" relationship="rootViewController" id="x8i-iH-yye"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hAu-z3-uJz" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1084" y="-627"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="uCX-RS-fvA">
@@ -452,7 +538,10 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CUh-qI-OCg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1047" y="56"/>
+            <point key="canvasLocation" x="-1057" y="95"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="ldE-Ci-Pyu"/>
+    </inferredMetricsTieBreakers>
 </document>
