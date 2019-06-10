@@ -33,8 +33,14 @@ class AddRegistrationTableViewController: UITableViewController, SelectRoomTypeT
     var roomType: RoomType? {
         didSet {
             updateDoneBarButtonState()
+            updateTotalPrice()
         }
     }
+    
+    @IBOutlet weak var numberOfNightsLabel: UILabel!
+    @IBOutlet weak var roomTypePriceLabel: UILabel!
+    @IBOutlet weak var wifiPriceLabel: UILabel!
+    @IBOutlet weak var totalPriceLabel: UILabel!
     
     let checkInDatePickerCellIndexPath = IndexPath(row: 1, section: 1)
     let checkOutDatePickerCellIndexPath = IndexPath(row: 3, section: 1)
@@ -63,6 +69,7 @@ class AddRegistrationTableViewController: UITableViewController, SelectRoomTypeT
             firstNameTextField.text = registration.firstName
             lastNameTextField.text = registration.lastName
             emailTextField.text = registration.email
+            checkInDatePicker.minimumDate = registration.checkInDate
             checkInDatePicker.date = registration.checkInDate
             checkOutDatePicker.date = registration.checkOutDate
             numberOfAdultsStepper.value = Double(registration.numberOfAldults)
@@ -82,7 +89,9 @@ class AddRegistrationTableViewController: UITableViewController, SelectRoomTypeT
     
     func updateDateViews() {
         checkOutDatePicker.minimumDate = checkInDatePicker.date.addingTimeInterval(86400)
-        
+        if checkOutDatePicker.date < checkOutDatePicker.minimumDate! {
+            checkOutDatePicker.date = checkOutDatePicker.minimumDate!
+        }
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .medium
         checkInLabel.text = dateFormatter.string(from: checkInDatePicker.date)
@@ -102,6 +111,7 @@ class AddRegistrationTableViewController: UITableViewController, SelectRoomTypeT
     
     @IBAction func datePickerValueChanged(_ sender: UIDatePicker) {
         updateDateViews()
+        updateTotalPrice()
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -171,6 +181,7 @@ class AddRegistrationTableViewController: UITableViewController, SelectRoomTypeT
         } else {
             wifiLabel.text = "$ 0"
         }
+        updateTotalPrice()
     }
     
     func updateRoomType() {
@@ -179,6 +190,23 @@ class AddRegistrationTableViewController: UITableViewController, SelectRoomTypeT
         } else {
             roomTypeLabel.text = "Not Set"
         }
+    }
+    
+    func updateTotalPrice() {
+        let numberOfNights = Int(checkOutDatePicker.date.timeIntervalSince(checkInDatePicker.date) / 86400)
+        numberOfNightsLabel.text = "\(numberOfNights)"
+        let roomPrice = numberOfNights * (roomType?.price ?? 0)
+        if let roomType = roomType {
+            roomTypePriceLabel.text = roomType.shortName + "   $" + String(roomPrice)
+        }
+        var wifiPrice = numberOfNights * 10
+        if wifiSwitch.isOn {
+            wifiPriceLabel.text = "Yes   $ \(wifiPrice)"
+        } else {
+            wifiPrice = 0
+            wifiPriceLabel.text = "No   $ \(wifiPrice)"
+        }
+        totalPriceLabel.text = "$ \(roomPrice + wifiPrice)"
     }
     
     func didSelect(roomType: RoomType) {
